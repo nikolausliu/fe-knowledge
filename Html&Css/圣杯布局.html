@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>圣杯布局</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      padding-left: 150px;
+      padding-right: 200px;
+    }
+
+    .main,
+    .left,
+    .right {
+      float: left;
+      height: 100px;
+    }
+
+    .main {
+      width: 100%;
+      background: orange;
+    }
+
+    .left {
+      width: 150px;
+      background: pink;
+      /* 让left和mian在同一行，并且在main左侧 */
+      margin-left: -100%;
+      /* 用相对定位使left向左移动到container的padding-left的空白处 */
+      position: relative;
+      left: -150px;
+    }
+
+    .right {
+      width: 200px;
+      background: lightgreen;
+      /* 让right和main在同一行，并且在main右侧 */
+      margin-left: -200px;
+      /* 用相对定位使right向右移动到container的padding-right的空白处 */
+      position: relative;
+      right: -200px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <div class="main">main</div>
+    <div class="left">left</div>
+    <div class="right">right</div>
+  </div>
+</body>
+
+</html>

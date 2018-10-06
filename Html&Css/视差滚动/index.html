@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>css视差滚动</title>
+  <style>
+    body,
+    html {
+      height: 100%;
+      margin: 0;
+      padding: 0
+    }
+
+    .box {
+      height: 100%;
+      position: relative;
+      z-index: 1;
+    }
+
+    .flowImage {
+      position: relative;
+      height: 500px;
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-position: center center;
+      z-index: 1;
+      background-attachment: fixed;
+    }
+
+    .flowImage>p {
+      margin: 0;
+      position: absolute;
+      top: 50%;
+      left: 10%;
+      color: #fff;
+      font-size: 30px;
+      transform: translate(-10%, -50%);
+    }
+
+    .bg1 {
+      background-image: url(background1.jpg);
+    }
+
+    .bg2:nth-child(2) {
+      background: lightgreen;
+      /* background-image: url(background2.jpg); */
+    }
+
+    .bg3:nth-child(3) {
+      background-image: url(background3.jpg);
+    }
+
+    .bg4:nth-child(4) {
+      /* background-image: url(background1.jpg); */
+      background: lightblue;
+    }
+
+    .bg5:nth-child(5) {
+      background-image: url(background2.jpg);
+    }
+
+    .bg6:nth-child(6) {
+      background-image: url(background3.jpg);
+      background: lightskyblue;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="box">
+    <div class="flowImage fixed-bg bg1">
+      <p>
+        一月诗人的右手上住了一把伞<br>
+        二月的发上开出了蔷薇
+      </p>
+    </div>
+    <div class="flowImage fixed-bg bg2">
+      <p>
+        三月是麻雀熙熙攘攘越过楼房<br>
+        四月很快向你告别
+      </p>
+    </div>
+    <div class="flowImage fixed-bg bg3">
+      <p>
+        五月说他想要去流浪<br>
+        六月一个人在海边喝酒吹风
+      </p>
+    </div>
+    <div class="flowImage fixed-bg bg4">
+      <p>
+        七月没有夜晚<br>
+        八月变成了晚归人的目光
+      </p>
+    </div>
+    <div class="flowImage fixed-bg bg5">
+      <p>
+        九月你把秘密藏进了心脏<br>
+        十月只有空荡荡的夕阳
+      </p>
+    </div>
+    <div class="flowImage fixed-bg bg6">
+      <p>
+        十一月牧羊人开始绝望<br>
+        十二月没有人告诉我冬天如此漫长
+      </p>
+    </div>
+  </div>
+
+</body>
+
+</html>

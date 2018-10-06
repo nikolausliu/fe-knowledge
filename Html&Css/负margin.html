@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>负margin</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+    }
+
+    .clearfix:after {
+      content: " ";
+      display: block;
+      ;
+      line-height: 0;
+      height: 0;
+      visibility: hidden;
+      clear: both;
+    }
+
+    p {
+      margin: 20px 0 10px;
+    }
+
+    .box {
+      float: left;
+      width: 100px;
+      height: 100px;
+    }
+
+    .box1 {
+      background: pink;
+    }
+
+    .box2 {
+      background: lightgreen;
+    }
+
+    .box3 {
+      background: lightblue;
+    }
+
+    .table {
+      border: 1px solid #ccc;
+    }
+    .table li {
+      list-style: none;
+      border-bottom: 1px solid #ccc;
+      margin-bottom: -1px;
+    }
+  </style>
+</head>
+
+<body>
+  <p>负margin可以改变浮动元素的显示位置</p>
+  <div class="clearfix">
+    <div class="box box1" style="margin-left: -25px;"></div>
+    <div class="box box2" style="margin-left: -25px;"></div>
+    <div class="box box3" style="margin-left: -25px;"></div>
+  </div>
+  <p>你看，最后面的元素也可以显示在最前面</p>
+  <div class="clearfix">
+    <div class="box box1"></div>
+    <div class="box box2"></div>
+    <div class="box box3" style="margin-left: -200px;"></div>
+  </div>
+  <p>负margin可以使重合的border看上去不那么粗</p>
+  <ul class="table">
+    <li>这是一个列表项</li>
+    <li>这是一个列表项</li>
+    <li>这是一个列表项</li>
+    <li>这是一个列表项</li>
+  </ul>
+</body>
+
+</html>
