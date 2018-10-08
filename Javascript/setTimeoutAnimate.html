@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>setTimeoutAnimate</title>
+  <style>
+    * {
+      margin: 0;
+    }
+
+    #animate {
+      height: 5px;
+      background: orange;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="animate"></div>
+
+  <script>
+    var start = null;
+    var element = document.getElementById('animate');
+    element.style.position = 'absolute';
+    var progress = 0;
+
+    function step() {
+      if (progress < 100) {
+        progress += .5;
+        element.style.width = progress + '%';
+        setTimeout(step, 1000 / 60);
+      }
+    }
+    setTimeout(step, 1000 / 60);
+  </script>
+</body>
+
+</html>

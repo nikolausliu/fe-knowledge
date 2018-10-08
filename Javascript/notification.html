@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Notification</title>
+</head>
+
+<body>
+  <form action="" id="form">
+    <input type="text" name="title" id="title" placeholder="请输入标题"><br>
+    <select name="dir" id="dir">
+      <option value="auto">自动</option>
+      <option value="ltr">文字从左到右</option>
+      <option value="rtl">文字从右到左</option>
+    </select><br>
+    <textarea type="text" name="body" id="body" placeholder="请输入正文"></textarea><br>
+    <input type="radio" name="tag" id="" value="1">使用tag
+    <input type="radio" name="tag" id="" value="0">不使用tag
+  </form>
+  <br>
+  <button id="open">显示通知</button>
+  <button id="close">关闭通知</button>
+
+  <script>
+    var openBtn = document.getElementById('open');
+    var closeBtn = document.getElementById('close');
+    var notification = null;
+
+    function notify() {
+      var title = document.getElementById('title').value;
+      var dir = document.getElementById('dir').value;
+      var body = document.getElementById('body').value;
+
+      // 先检查浏览器是否支持
+      if (!("Notification" in window)) {
+        alert("This browser does not support desktop notification");
+      }
+
+      // 检查用户是否同意接受通知
+      else if (Notification.permission === "granted") {
+        // If it's okay let's create a notification
+        notification = new Notification(title, {
+          title,
+          dir,
+          body,
+          icon: 'https://avatars.githubusercontent.com/u/24707409?v=3'
+        });
+      }
+
+      // 否则我们需要向用户获取权限
+      else if (Notification.permission !== 'denied') {
+        Notification.requestPermission(function (permission) {
+          // 如果用户同意，就可以向他们发送通知
+          if (permission === "granted") {
+            notification = new Notification(title, {
+              dir,
+              body,
+              icon: 'https://avatars.githubusercontent.com/u/24707409?v=3'
+            });
+          }
+        });
+      }
+
+      // 用户拒绝之后就不要再继续打扰用户了
+    }
+
+    function close() {
+      notification.close();
+    }
+
+    openBtn.addEventListener('click', notify);
+    closeBtn.addEventListener('click', close);
+  </script>
+</body>
+
+</html>

@@ -19,6 +19,8 @@
 
 # 设计模式
 
+# RESTful API
+
 --- Web Apis ---
 # window.RequestAnimationFrame
 
