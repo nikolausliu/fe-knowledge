@@ -17,8 +17,6 @@
       <option value="rtl">文字从右到左</option>
     </select><br>
     <textarea type="text" name="body" id="body" placeholder="请输入正文"></textarea><br>
-    <input type="radio" name="tag" id="" value="1">使用tag
-    <input type="radio" name="tag" id="" value="0">不使用tag
   </form>
   <br>
   <button id="open">显示通知</button>
@@ -46,7 +44,8 @@
           title,
           dir,
           body,
-          icon: 'https://avatars.githubusercontent.com/u/24707409?v=3'
+          icon: 'https://avatars.githubusercontent.com/u/24707409?v=3',
+          tag: `tag${Math.random()}`
         });
       }
 
@@ -58,7 +57,8 @@
             notification = new Notification(title, {
               dir,
               body,
-              icon: 'https://avatars.githubusercontent.com/u/24707409?v=3'
+              icon: 'https://avatars.githubusercontent.com/u/24707409?v=3',
+              tag: `tag${Math.random()}`
             });
           }
         });
