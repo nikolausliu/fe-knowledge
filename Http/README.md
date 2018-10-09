@@ -12,7 +12,9 @@ TCP/IP协议族分层管理：应用层、传输层、网络层和数据链路�
 
 网络通信发生时，发送端从应用层往下走，接收端往应用层往上走。发送端每经过一层，就会打上一个对应层的首部信息；接收端每经过一层就会消去对应曾的首部信息。这种把数据消息包装起来的做法称为 **封装**。
 
-### 负责传输的IP协议
+![TCP/IP](http://oluuc63f6.bkt.clouddn.com/tcp-ip.png)
+
+## 负责传输的IP协议
 IP(Internet Protocol, 网际协议)位于网络层，作用是传送各种数据包。传送需要IP地址和MAC(Media Access Control, 媒体访问控制)地址。IP地址可变，MAC地址一般不变。
 
 ARP(Address Resolution Protocol, 地址解析协议)可以把IP地址解析为MAC地址。如果不在同一个局域网内，需要中转到下一个MAC地址。就像快递公司送货过程。
@@ -115,7 +117,7 @@ URN和URL是URI的子集。URL和URN一定是URI，反之不一定成立。形�
 ![http-catch](http://oluuc63f6.bkt.clouddn.com/http-cache1.png)
 
 参考：
-[HTTP 缓存机制一二三](https://zhuanlan.zhihu.com/p/29750583)
+- [HTTP 缓存机制一二三](https://zhuanlan.zhihu.com/p/29750583)
 
 
 # 三次握手
