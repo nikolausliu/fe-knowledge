@@ -51,6 +51,73 @@ URN和URL是URI的子集。URL和URN一定是URI，反之不一定成立。形�
 4. 请求行：请求方法 + 请求URI + HTTP版本。例如：GET http://abc.com HTTP/1.1
 5. 状态行: HTTP版本 + 状态码 + 原因短语。例如：HTTP/1.1 200 OK
 
+# 状态码
+1. 1xx: 信息性状态码
+2. 2xx: 成功状态码
+3. 3xx: 重定向状态码
+4. 4xx: 客户端错误状态码
+5. 5xx: 服务端错误状态码
+- 200 OK 成功
+- 204 No Content 响应报文主体无实体
+- 206 Partial Content 范围请求内容，Content-Range指定
+- 301 Moved Permanently 永久性重定向
+- 302 Found 临时性重定向
+- 303 See Other 资源存在另外的URI，应当访问这个URI
+- 304 Not Modified 资源未更改，客户端发送附带条件的请求，GET If-Match，If-Modified-Since，If-None-Match，If-Range，If-Unmodified-Since
+- 307 Temporary Redirect 临时重定向
+- 400 Bad Request 请求报文语法错误，浏览器会像对待200OK一样对待
+- 401 Unauthorized 认证未通过
+- 403 Forbidden 禁止访问
+- 404 Not Found 访问的资源找不到
+- 500 Internal Server Error 服务端执行错误
+- 503 Service Unavailable 服务器超负荷或维护中
+
+# Web服务器
+## 用单台虚拟主机实现多个域名
+用单台虚拟主机实现多个域名时，物理层面只有一台服务器，但是可以托管多个域名。
+
+这样就有一个问题：访问域名的时候，DNS会把域名解析为IP地址，这样虚拟主机上的多个域名会被解析成同一个IP地址，比如 http://abc.com/index.html 和 http:def.com/index.html 可能都被解析成了 http://192.168.1.1/index.html， 服务器要怎么区分到底是响应哪个域名下的index.html文件呢？
+
+解决：在发送HTTP请求时，必须在HOST首部内完整指定主机名或域名的URI。比如：Host: abc.com，这样服务器就知道怎么响应了。
+
+## 代理、网关和隧道
+### 代理
+1. 代理服务器在客户端和源服务器之间充当“中间人”角色。
+2. 通信过程可以级联多台代理服务器，每经过一台代理服务器就会附加一个**Via首部字段**以标记出经过的主机信息。
+3. 代理服务器按两种基准分类：是否使用缓存，是否修改报文。即缓存代理和透明代理（对应非透明）。
+
+### 网关
+1. 网关可以把提供非HTTP协议服务，比如网关可以接收到HTTP请求后转发成其他非HTTP协议的通信，在收到非HTTP服务器的响应后再把响应内容用HTTP相应给客户端。
+2. 利用网关能提高通信的安全性。
+
+### 隧道
+1. 隧道可以和远距离的服务器通过SSL等加密手段建立安全通信。
+2. 隧道时透明的，不会解析HTTP请求。
+3. 隧道会在通信双方断开连接时结束。
+
+## HTTP缓存
+- 数据库缓存
+- 服务器缓存
+  - 代理服务器缓存
+  - CDN缓存
+- **浏览器缓存**
+  - **HTTP缓存**
+  - indexDB
+  - cookie
+  - localStorage
+
+1. HTTP缓存通过头信息控制，分为两种：**强缓存**和**协商缓存**，强缓存如果命中则不需要和服务器发生交互，协商缓存不管命中与否都要和服务器发生交互。
+2. 浏览器发送请求前根据Expieres或Catch-Control（优先级更高）来判断是否命中强缓存。
+3. 如果命中强缓存,则直接从浏览器缓存中获取资源。如果未命中强缓存，则向服务器发起请求（此时服务器只返回首部信息）。
+4. 根据服务器响应的头信息中的Last-Modified或Etag判断是否命中协商缓存。
+5. 如果命中协商缓存，则从浏览器缓存中获取资源。如果未命中协商缓存，则从服务器获取资源
+
+![http-catch](http://oluuc63f6.bkt.clouddn.com/http-cache1.png)
+
+参考：
+[HTTP 缓存机制一二三](https://zhuanlan.zhihu.com/p/29750583)
+
+
 # 三次握手
 首先要搞清楚三次握手是为了确保数据准确无误的送达到目标而进行的一种策略。
 
@@ -78,3 +145,6 @@ SYN(Synchronize Sequence Numbers, 同步序列编号)和ACK(Acknowledgement, 确
 2. 解析CSS，形成CSS对象模型。
 3. 用DOM树和CSS对象模型构建渲染树。
 4. 布局和绘制。 
+
+# 参考：
+《图解HTTP》
