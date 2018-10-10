@@ -12,7 +12,7 @@ TCP/IP协议族分层管理：应用层、传输层、网络层和数据链路�
 
 网络通信发生时，发送端从应用层往下走，接收端往应用层往上走。发送端每经过一层，就会打上一个对应层的首部信息；接收端每经过一层就会消去对应曾的首部信息。这种把数据消息包装起来的做法称为 **封装**。
 
-![TCP/IP](http://oluuc63f6.bkt.clouddn.com/tcp-ip.png)
+![TCP/IP](../public/images/tcp-ip.png)
 
 ## 负责传输的IP协议
 IP(Internet Protocol, 网际协议)位于网络层，作用是传送各种数据包。传送需要IP地址和MAC(Media Access Control, 媒体访问控制)地址。IP地址可变，MAC地址一般不变。
@@ -114,23 +114,37 @@ URN和URL是URI的子集。URL和URN一定是URI，反之不一定成立。形�
 4. 根据服务器响应的头信息中的Last-Modified或Etag判断是否命中协商缓存。
 5. 如果命中协商缓存，则从浏览器缓存中获取资源。如果未命中协商缓存，则从服务器获取资源
 
-![http-catch](http://oluuc63f6.bkt.clouddn.com/http-cache1.png)
+![http-catch](../public/images/http-cache1.png)
 
 参考：
 - [HTTP 缓存机制一二三](https://zhuanlan.zhihu.com/p/29750583)
 
 
 # 三次握手
-首先要搞清楚三次握手是为了确保数据准确无误的送达到目标而进行的一种策略。
+建立一个TCP连接前需要三次握手
 
-SYN(Synchronize Sequence Numbers, 同步序列编号)和ACK(Acknowledgement, 确认字符)都是TCP的 **标志(flag)**。
+- SYN: 建立一个连接
+- FIN: 关闭一个链接
+- ACK: 确认接收数据
+
 1. 发送端：SYN = m
-2. 接收端：SYN = m + 1, ACK = n
+2. 接收端：SYN = N, ACK = m + 1
 3. 发送端：ACK = n + 1
-4. 三次握手结束
-5. 开始一次请求和响应
+4. 三次握手结束，开始数据传输
+
+![三次握手](../public/images/three-way-handshake.jpg)
 
 # 四次挥手
+关闭一个TCP连接需要四次挥手
+
+1. 发送端：FIN = m
+2. 接收端：ACK = m + 1
+3. 接收端：FIN = n
+4. 发送端：ACK = n + 1
+5. 四次挥手结束，断开TCP连接
+
+![三次握手](../public/images/four-way-wave.png)
+
 
 # 从输入URL到浏览器显示页面发生了什么
 ## 网络通信
