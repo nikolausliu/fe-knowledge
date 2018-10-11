@@ -27,3 +27,4 @@
 # Page Visibility API
 
 # Notification
+![Notification](notification.html)
