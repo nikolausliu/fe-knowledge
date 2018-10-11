@@ -26,7 +26,15 @@
 
 # Page Visibility API
 
-# Notification
+[MDN上的定义](https://developer.mozilla.org/zh-CN/docs/Web/API/Page_Visibility_API)
+
+- 页面可见性API，通过`document.addEventListener('visibilitychange')`监听页面可见性，在回调中判断`document.hidden == true | false`或者判断`document.visibilityState == 'visible' | 'hidden' | 'prerender' | 'unloaded'`。
+- 使用场景：切换页面时，暂停视频或音乐，暂停轮播图自动轮播等。总结起来就是状态会随时间改变，我们希望这种状态在我们不观察时保持不变，并且这种状态可控时都能用这个API来做限制。
+- 页面可见性 API对于节省资源和提高性能特别有用，它使页面在文档不可见时避免执行不必要的任务。
+- `<iframe>`的可见性状态与父文档相同。使用CSS属性（例如display: none;）隐藏`<iframe>`不会触发可见性事件或更改框架中包含的文档的状态。
+- "当浏览器最小化时，不会触发visibilitychange 事件，也不会设置hidden为true。"这是mdn上的原话，但是我在测试时发现浏览器最小化是会触发visibilitychange事件的，页面销毁时也会触发。
+
+# Notifications API
 <details>
 <summary>查看详情</summary>
 
@@ -67,6 +75,5 @@
 **Demo:**
 - [demo](https://htmlpreview.github.io/?https://github.com/nikolausliu/fe-knowledge/blob/master/Javascript/notification.html)
 - [promise-demo](https://htmlpreview.github.io/?https://github.com/nikolausliu/fe-knowledge/blob/master/Javascript/notification-promise.html)
-
 
 </details>
