@@ -6,17 +6,26 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Notification</title>
+  <style>
+    label {
+      display: inline-block;
+      width: 50px;
+      vertical-align: top;
+    }
+  </style>
 </head>
 
 <body>
   <form action="" id="form">
-    <input type="text" name="title" id="title" placeholder="请输入标题"><br>
-    <select name="dir" id="dir">
+
+    <label for="title">title: </label><input type="text" name="title" id="title" placeholder="请输入标题"><br>
+    <label for="title">dir: </label><select name="dir" id="dir">
       <option value="auto">自动</option>
       <option value="ltr">文字从左到右</option>
       <option value="rtl">文字从右到左</option>
     </select><br>
-    <textarea type="text" name="body" id="body" placeholder="请输入正文"></textarea><br>
+    <label for="title">body: </label><textarea type="text" name="body" id="body" placeholder="请输入正文"></textarea><br>
+    <label for="tag">tag: </label><input type="text" name="tag" id="tag" placeholder="请输入标签"><br>
   </form>
   <br>
   <button id="open">显示通知</button>
@@ -27,11 +36,36 @@
     var closeBtn = document.getElementById('close');
     var notification = null;
 
-    function notify() {
+    var createNotification = function () {
       var title = document.getElementById('title').value;
       var dir = document.getElementById('dir').value;
       var body = document.getElementById('body').value;
+      var tag = document.getElementById('tag').value;
 
+      notification = new Notification(title, {
+        title,
+        dir,
+        body,
+        tag,
+        icon: 'https://avatars.githubusercontent.com/u/24707409?v=3',
+      });
+      console.log(notification);
+
+      notification.onshow = function () {
+        console.log('notification show');
+      }
+      notification.onclick = function () {
+        console.log('notification click');
+      }
+      notification.onclose = function () {
+        console.log('notification close');
+      }
+      notification.onerror = function () {
+        console.log('notification error');
+      }
+    }
+
+    function notify() {
       // 先检查浏览器是否支持
       if (!("Notification" in window)) {
         alert("This browser does not support desktop notification");
@@ -40,13 +74,7 @@
       // 检查用户是否同意接受通知
       else if (Notification.permission === "granted") {
         // If it's okay let's create a notification
-        notification = new Notification(title, {
-          title,
-          dir,
-          body,
-          icon: 'https://avatars.githubusercontent.com/u/24707409?v=3',
-          tag: `tag${Math.random()}`
-        });
+        createNotification();
       }
 
       // 否则我们需要向用户获取权限
@@ -54,12 +82,7 @@
         Notification.requestPermission(function (permission) {
           // 如果用户同意，就可以向他们发送通知
           if (permission === "granted") {
-            notification = new Notification(title, {
-              dir,
-              body,
-              icon: 'https://avatars.githubusercontent.com/u/24707409?v=3',
-              tag: `tag${Math.random()}`
-            });
+            createNotification();
           }
         });
       }
