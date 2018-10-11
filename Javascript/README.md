@@ -27,7 +27,10 @@
 # Page Visibility API
 
 # Notification
-[MDN上](https://developer.mozilla.org/zh-CN/docs/Web/API/notification)
+<details>
+<summary>查看详情</summary>
+
+[MDN上的定义](https://developer.mozilla.org/zh-CN/docs/Web/API/notification)
 
 **语法：**`let notification = new Notification(title, options = {dir, lang, body, tag, icon})`
 
@@ -62,5 +65,8 @@
 - 在各浏览器下的UI和行为不同。比如同样在百度站点下`new Notification('')`Firefox在title处什么都不显示，点击通知会跳转回Firefox调用Notification的那个页面。微软的Edge也会跳转，但是title会显示百度的域名。Google Chrome会在title处显示Google Chrome，但是点击后会直接关闭而不跳转。
 
 **Demo:**
-[demo](https://htmlpreview.github.io/?https://github.com/nikolausliu/fe-knowledge/blob/master/Javascript/notification.html)
-[promise-demo](https://htmlpreview.github.io/?https://github.com/nikolausliu/fe-knowledge/blob/master/Javascript/notification-promise.html)
+- [demo](https://htmlpreview.github.io/?https://github.com/nikolausliu/fe-knowledge/blob/master/Javascript/notification.html)
+- [promise-demo](https://htmlpreview.github.io/?https://github.com/nikolausliu/fe-knowledge/blob/master/Javascript/notification-promise.html)
+
+
+</details>
