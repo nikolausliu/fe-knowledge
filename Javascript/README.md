@@ -24,7 +24,21 @@
 --- **Web Apis** ---
 # window.RequestAnimationFrame
 
+[MDN上的定义](https://developer.mozilla.org/zh-CN/docs/Web/API/Window/requestAnimationFrame)
+- 回调会在浏览器重绘之前调用
+- 回调有一个参数，当前被`requestAnimationFrame()`排序的回调函数被触发的时间
+- 返回值：一个整数标志，类似于setTimeout的返回值，可以传入`window.cancelAnimationFrame()`以取消回调
+- 这个方法运行一次，只执行一次动画，要生成连续的动画，需要在回调里递归的调用这个方法。
+- 页面后台运行时，`requestAnimationFrame()`会暂停调用以提升性能和电池寿命。但是我在demo中发现，setTimeout的动画在后台运行时，好像也会暂停，可以看下面给出的demo。
+
+## demo
+提示：可以在页面动画加载一半的时候，切换到其他标签页，过一会再切回来，发现动画是从刚才的位置继续进行的，说明是暂停了的。
+- [requestAnimationFrame的动画](https://htmlpreview.github.io/?https://github.com/nikolausliu/fe-knowledge/blob/master/Javascript/requestAnimationFrame.html)
+- [setTimeout的动画](https://htmlpreview.github.io/?https://github.com/nikolausliu/fe-knowledge/blob/master/Javascript/setTimeoutAnimate.html)
+
 # Element.getBoundingClientRect
+[MDN上的定义](https://developer.mozilla.org/zh-CN/docs/Web/API/Element/getBoundingClientRect)
+该方法返回元素的大小及其相对于视口的位置。返回值是一个DOMRect对象：`{top,right,bottom,left,width,height,x,y}`。
 
 # Page Visibility API
 
@@ -37,6 +51,7 @@
 - "当浏览器最小化时，不会触发visibilitychange 事件，也不会设置hidden为true。"这是mdn上的原话，但是我在测试时发现浏览器最小化是会触发visibilitychange事件的，页面销毁时也会触发。
 
 # Notifications API
+
 <details>
 <summary>查看详情</summary>
 
