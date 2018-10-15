@@ -103,11 +103,13 @@ localStorage：存储持久数据(目前业界基本上统一为5M)，浏览器�
 
 ---
 ---
-# 页面渲染过程？
-1. 解析HTML，构建DOM树。
-2. 解析CSS，形成CSS对象模型。
-3. 用DOM树和CSS对象模型构建渲染树。
-4. 布局和绘制。
+# 浏览器渲染过程？
+![浏览器渲染过程](../public/images/browser-rendering-process.jpg)
+1. 浏览器通过HTMLParser根据深度遍历的原则把HTML解析成DOM Tree。
+2. 将CSS解析成CSS Rule Tree（CSSOM Tree）。
+3. 根据DOM树和CSSOM树来构造render Tree。
+4. layout（布局）：根据得到的render tree来计算所有节点在屏幕的位置。
+5. paint（绘制）：遍历render树，并调用硬件图形API来绘制每个节点。
 
 # 重排和重绘及渲染优化？
 1. 重排就是需要重新布局。改变元素的宽高位置等会导致重排。
