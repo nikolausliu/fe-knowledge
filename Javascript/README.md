@@ -20,6 +20,7 @@
 # RESTful API
 
 # Promise
+[Promise 必知必会（十道题）](https://zhuanlan.zhihu.com/p/30797777)
 
 --- **Web Apis** ---
 # window.RequestAnimationFrame
