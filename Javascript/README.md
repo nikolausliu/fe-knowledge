@@ -5,11 +5,97 @@
 
 # Event Loop
 
+## 我的理解：
+
+1. 同步代码在执行栈中顺序执行，当遇到异步代码时，把它移入`Event Table`中注册相应的函数，然后继续执行后面的同步代码。
+2. 当某个异步事件完成时，`Event Table`把注册给该事件的函数移入`Event Queue（事件队列）`。
+3. 执行栈内的同步任务执行完成处于闲置状态后，就会去`Event Queue`中按照顺序读取其中的函数，进入执行栈执行。
+4. 以上过程不断重复，就叫`Event Loop（事件循环）`。
+5. 其中第3步中提到的`Event Queue`又分为`macrotask（宏任务）`和`microtask（微任务）`。
+  - macrotask:
+    - setTimeout
+    - setInterval
+    - setImmediate
+    - requestAnimationFrame
+    - I/O
+    - UI rendering
+  - microtask: 
+    - Promises
+    - process.nextTick
+    - Object.observe
+    - MutationObserver
+6. 执行栈内的第一层同步代码也属于宏任务，宏任务执行完后马上按照顺序执行微任务队列中的所有任务，微任务也执行完后，第一轮事件循环就结束了。继续执行下一个宏任务，此时开始了第二轮事件循环。
+7. 概括一下事件循环的过程：执行完宏任务，接着执行所有的微任务。然后接着执行下一个宏任务，再接着执行所有的微任务，如此循环往复。
+
+## 例子
+```javascript
+setTimeout(function(){
+    console.log(1)
+},0);
+new Promise(function(resolve){
+    console.log(2)
+    for( var i=100000 ; i>0 ; i-- ){
+        i==1 && resolve()
+    }
+    console.log(3)
+}).then(function(){
+    console.log(4)
+});
+console.log(5);
+```
+上面这个例子的执行顺序：
+
+1. 执行栈执行到setTimeout，识别为异步任务，移入到Event Table并注册函数console.log(1)，同时（移入Event Table的哪一刻开始计时，0ms）把函数移入宏任务队列。
+2. new Promise入栈，遇到同步代码console.log(2)，输出2。
+3. 执行for循环，仍然是同步任务，遇到resolve()，识别为异步任务，移入到Event Table并注册then方法里的函数，同时把函数移入微任务队列。
+4. 执行console.log(3)，输出3。new Promise出栈。
+5. 执行console.log(5)，输出5。
+6. 执行栈为空，开始执行微任务队列里的第一个任务。console.log(4)入栈，输出4，console.log(4)出栈。
+7. 执行栈为空，第一轮事件循环结束。开始下一轮事件循环，执行宏任务队列里的第一个任务。console.log(1)入栈，输出1，console.log(1)出栈。
+8. 执行栈为空，第二轮事件循环结束。
+
+综上，打印顺序是：2,3,5,4,1。
+
+
+## 浏览器环境和node环境表现不一致
+```javascript
+setTimeout(function() {
+    console.log(1);
+    new Promise(function(resolve) {
+        console.log(2);
+        resolve();
+    }).then(function() {
+        console.log(3)
+    })
+})
+
+setTimeout(function() {
+    console.log(4);
+    new Promise(function(resolve) {
+        console.log(5);
+        resolve();
+    }).then(function() {
+        console.log(6)
+    })
+})
+```
+
+同样的代码，在Chrome下输出1,2,3,4,5,6。在node环境下，有时输出1,2,3,4,5,6；有时输出1,2,4,5,3,6。ummmm~~~。造成这个问题的原因是chrome和node对于Promise的实现是不同的，可以参考[这个问题下方应杭的回答](https://www.zhihu.com/question/272286497)。
+
+
+## 参考：
+- [这一次，彻底弄懂 JavaScript 执行机制](https://juejin.im/post/59e85eebf265da430d571f89)
+- [通过microtasks和macrotasks看JavaScript异步任务执行顺序](https://tuobaye.com/2017/10/24/%E9%80%9A%E8%BF%87microtasks%E5%92%8Cmacrotasks%E7%9C%8BJavaScript%E5%BC%82%E6%AD%A5%E4%BB%BB%E5%8A%A1%E6%89%A7%E8%A1%8C%E9%A1%BA%E5%BA%8F/)
+- [图解搞懂JavaScript引擎Event Loop](https://juejin.im/post/5a6309f76fb9a01cab2858b1)
+
 # new一个对象的过程发生了什么
 1. 创建一个新对象
 2. 将构造函数的作用域赋给新对象
 3. 执行构造函数内的代码
 4. 返回新对象
+
+# Promise
+[Promise 必知必会（十道题）](https://zhuanlan.zhihu.com/p/30797777)
 
 # 面向对象
 
@@ -19,8 +105,7 @@
 
 # RESTful API
 
-# Promise
-[Promise 必知必会（十道题）](https://zhuanlan.zhihu.com/p/30797777)
+
 
 --- **Web Apis** ---
 # window.RequestAnimationFrame
