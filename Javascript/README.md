@@ -82,11 +82,68 @@ setTimeout(function() {
 
 同样的代码，在Chrome下输出1,2,3,4,5,6。在node环境下，有时输出1,2,3,4,5,6；有时输出1,2,4,5,3,6。ummmm~~~。造成这个问题的原因是chrome和node对于Promise的实现是不同的，可以参考[这个问题下方应杭的回答](https://www.zhihu.com/question/272286497)。
 
+## node环境下宏任务和微任务详解
+1. node环境下，宏任务是分阶段的，按阶段先后执行：
+
+- expired timers and intervals，即到期的setTimeout/setInterval
+- I/O events，包含文件，网络等等
+- immediates，通过setImmediate注册的函数
+- close handlers，close事件的回调，比如TCP连接断开
+
+什么意思呢？node把宏任务分成了上面4类，如果在同一轮事件循环里往宏任务里分别添加了上面4类宏任务，会按照以上顺序分别执行。
+
+```javascript
+setImmediate(() => {
+    console.log(1)
+})
+setTimeout(() => {
+	console.log(0)	
+})
+```
+
+2. 微任务也分为两种，**process.nextTick**和**其它微任务**，比如在同一轮事件循环里有process.nextTick和promise，那么总是那个process.nextTick先执行。
+
+```javascript
+Promise.resolve().then(()=>{
+    console.log(1)
+})
+process.nextTick(()=>{
+    console.log(2)
+})
+console.log(3)
+```
+
+以上代码输出结果为3,2,1。
+
+3. 这个输出结果也不稳定：
+```javascript
+setTimeout(function() {
+    console.log(1);
+    new Promise(function(resolve) {
+        console.log(2);
+        resolve();
+    }).then(function() {
+        console.log(3)
+    })
+})
+
+setTimeout(function() {
+    console.log(4);
+    new Promise(function(resolve) {
+        console.log(5);
+        resolve();
+    }).then(function() {
+        console.log(6)
+    })
+})
+```
 
 ## 参考：
 - [这一次，彻底弄懂 JavaScript 执行机制](https://juejin.im/post/59e85eebf265da430d571f89)
 - [通过microtasks和macrotasks看JavaScript异步任务执行顺序](https://tuobaye.com/2017/10/24/%E9%80%9A%E8%BF%87microtasks%E5%92%8Cmacrotasks%E7%9C%8BJavaScript%E5%BC%82%E6%AD%A5%E4%BB%BB%E5%8A%A1%E6%89%A7%E8%A1%8C%E9%A1%BA%E5%BA%8F/)
 - [图解搞懂JavaScript引擎Event Loop](https://juejin.im/post/5a6309f76fb9a01cab2858b1)
+- [面试之Event Loop，nextTick()和setImmediate()区别分析](https://zhuanlan.zhihu.com/p/33090541)
+- [HTML规范](https://html.spec.whatwg.org/multipage/webappapis.html#event-loop-processing-model)
 
 # new一个对象的过程发生了什么
 1. 创建一个新对象
