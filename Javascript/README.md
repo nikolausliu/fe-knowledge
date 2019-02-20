@@ -164,8 +164,167 @@ console.log(3)
 [Promise 必知必会（十道题）](https://zhuanlan.zhihu.com/p/30797777)
 
 # 面向对象
+## Object.defineProperty
+对象的属性分为**数据属性**和**访问器属性**，我们平时接触比较多的是数据属性
+
+### 数据属性
+我们随便写一个对象`var person = {name: 'xiaoMing'}`，可以看到它有一个属性name，这个name有一个具体的字符串值xiaoMing。为了描述这个属性name，我们需要用到**特性**这个概念。我们用4个特性来描述一个数据属性，为了区别属性，把特性用两个中括号括起来：
+
+- [[configurable]]: 是否可配置。这个特性可以想象成一个总开关，如果把这个特性设置为false，那么属性就不能被更改了：不能用delete操作符操作来删除属性，不能设置属性的其它特性，也不能把数据属性修改为访问器属性。并且这个开关一旦关了就再也打不开了，也就是说一旦设置为false,就不能再设置回true了。
+- [[enumerable]]: 是否可枚举。确切的说是属性能否被for-in循环枚举。
+- [[writable]]: 是否可写。是否能够修改属性的值，如果设为false，那么属性就是只读的，修改属性的操作无效。
+- [[value]]: 值。比如这里的name的这个特性就是字符串xiaoMing。
+
+对于没有手动设置过特性的属性，configurable、enumerable和writable这3个特性默认都是true。想要手动修改属性的特性，需要用到`Object.defineProperty(object, prop, descriptor)`方法。
+
+这个方法的3个参数分别是：对象（在这里就是person）、属性（字符串name）以及一个描述特性的描述符对象（比如`{writable: false, name: 'xiaoHong'}`就表示把person对象改为name值为xiaoHong，并且name不可修改）。
+
+如果对某个对象的某个属性调用了这个方法，但是没有指定configurable、enumerable和writable这3个特性，那么这些特性就会默认被修改为false。言下之意，如果调用了这个方法，修改了person对象的name属性，但是没有设置configurable，那以后都不能调用这个方法来修改name属性了，因为开关已经关了。
+
+`Object.defineProperties(object, descriptor)`方法可以用来一次定义多个属性的特性，第一个参数还是对象，第二个参数是`{属性：描述符对象}`这样的对象。还是以person对象为例:`Object.defineProperties(person, {name: {value: 'xiaoMing'}, age: {writable: false, value: 1}})`。
+
+`Object.getOwnPropertyDescriptor(object, prop)`用来获取某个对象的某个属性的描述符对象。
+
+### 访问器属性
+访问器属性不包含具体的值，只包含一对getter和setter函数。数据属性要访问和设置某个属性的值很简单：`person.name`可以获取值，`person.name = 'xiaoMing'`可以设置值，访问器属性可不行。比如还是person对象，加入它有一个访问器属性age，你要获取值的时候这么写`person.age`实际上是调用了它的getter函数，函数的返回值就是`person.name`的值；你要设置值的时候写`person.name = 'xiaoMing'`实际上是把xiaoMing传给了它的setter函数，setter函数说怎么干就怎么干。
+
+访问器属性的特性：
+
+- [[configurable]]: 
+- [[enumerable]]: 
+- [[get]]: 读取属性时调用的函数，默认为undefined。
+- [[set]]: 设置属性时调用的函数，默认为undefined。
+
+访问器属性的特性也用`Object.defineProperty()`来修改。
+
+
+## 创建对象
+### 工厂模式
+工厂模式创建的对象无法无法识别其类型。
+
+### 构造函数模式
+构造函数模式创建的对象，如果对象的方法体写在构造函数内部，则没创建一个新对象，都要为之创建一个Functions实例（定义function实际是new Function(){}的过程），浪费内存。如果把方法定义写在全局，则造成全局污染，且封装性差。
+
+### 原型模式
+原型模式创建的对象，如果原型中有引用类型的属性，那么一个实例的改属性变化会引起所有实例的变化。
+
+### 组合使用构造函数模式和原型模式
+
+```javascript
+function Animal(name){
+    this.name = name;
+}
+Animal.prototype.eat = function(){
+    console.log(`${this.name} is eating!`);
+}
+```
+
+## 原型继承
+```javascript
+function Animal(name) {
+    this.name = name;
+}
+Animal.prototype.eat = function(){
+    console.log(`${this.name} is eating!`);
+}
+
+// 继承属性
+var Dog = function(name){
+    Animal.call(this, name);
+    this.legs = 4;
+}
+
+// 借用空函数
+function F(){}
+F.prototype = Animal.prototype;
+// 继承原型
+Dog.prototype = new F();
+// 上一步切断了Dog.prototype与原配prototype之间的联系，constructor变了，要把constructor改回来
+Dog.prototype.constructor = Dog;
+// 给dog添加方法
+Dog.prototype.bark = function(){
+    console.log('汪汪汪!');
+}
+
+var dog = new Dog('哈士奇');
+console.log(dog.name, dog.legs);    // 哈士奇  4
+dog.eat();  // 哈士奇 is eating!
+dog.bark(); // 汪汪汪!
+```
+
+继承这个动作可以被封装起来：
+
+```javascript
+function inherits(Child, Parent) {
+    var F = function(){}
+    F.prototype = Parent.prototype
+    Child.prototype = new F()
+    Child.prototype.constructor = Child
+}
+```
+
+用上面封装的函数改写一下：
+
+```javascript
+function Animal(name) {
+    this.name = name;
+}
+Animal.prototype.eat = function(){
+    console.log(`${this.name} is eating!`);
+}
+
+function Dog(name) {
+    Animal.call(this, name);
+    this.legs = 4;
+}
+inherits(Dog, Animal);
+Dog.prototype.bark = function(){
+    console.log('汪汪汪!');
+}
+
+var dog = new Dog('哈士奇');
+console.log(dog.name, dog.legs);    // 哈士奇  4
+dog.eat();  // 哈士奇 is eating!
+dog.bark(); // 汪汪汪!
+
+```
+
+### class继承
+
+```javascript
+class Animal {
+    constructor(name) {
+        this.name = name
+    }
+    eat(){
+        console.log(`${this.name} is eating!`)
+    }
+}
+
+var animal = new Animal('animal')
+
+class Dog extends Animal {
+    constructor(name) {
+        super(name)
+        this.legs = 4
+    }
+    bark() {
+        console.log('汪汪汪!')
+    }
+}
+var dog = new Dog('哈士奇');
+console.log(dog.name, dog.legs);    // 哈士奇  4
+dog.eat();  // 哈士奇 is eating!
+dog.bark(); // 汪汪汪!
+```
+
+## 参考
+- [廖雪峰的JavaScript教程](https://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001434499763408e24c210985d34edcabbca944b4239e20000)
+- 《JavaScript高级程序设计（第三版）》第六章
 
 # 函数式编程
+
+# Vue响应式原理
 
 # 设计模式
 
