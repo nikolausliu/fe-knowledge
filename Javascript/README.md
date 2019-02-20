@@ -4,11 +4,12 @@
 # 作用域及闭包
 
 # Event Loop
+浏览器环境和node环境下的Event Loop模型是不同的。
 
-## 我的理解：
+## 浏览器环境
 
 1. 同步代码在执行栈中顺序执行，当遇到异步代码时，把它移入`Event Table`中注册相应的函数，然后继续执行后面的同步代码。
-2. 当某个异步事件完成时，`Event Table`把注册给该事件的函数移入`Event Queue（事件队列）`。
+2. 当某个异步事件完成时，`Event Table`把注册给该事件的函数移入`Event Queue（事件队列）`，其中setTimeout/setInterval会在注册函数的同时开始计时，计时结束就把函数移入事件队列。
 3. 执行栈内的同步任务执行完成处于闲置状态后，就会去`Event Queue`中按照顺序读取其中的函数，进入执行栈执行。
 4. 以上过程不断重复，就叫`Event Loop（事件循环）`。
 5. 其中第3步中提到的`Event Queue`又分为`macrotask（宏任务）`和`microtask（微任务）`。
@@ -27,7 +28,7 @@
 6. 执行栈内的第一层同步代码也属于宏任务，宏任务执行完后马上按照顺序执行微任务队列中的所有任务，微任务也执行完后，第一轮事件循环就结束了。继续执行下一个宏任务，此时开始了第二轮事件循环。
 7. 概括一下事件循环的过程：执行完宏任务，接着执行所有的微任务。然后接着执行下一个宏任务，再接着执行所有的微任务，如此循环往复。
 
-## 例子
+### 例子
 ```javascript
 setTimeout(function(){
     console.log(1)
@@ -56,8 +57,35 @@ console.log(5);
 
 综上，打印顺序是：2,3,5,4,1。
 
+### requestAnimationFrame
+> 通常浏览器以每秒60帧（60fps）的速率刷新页面，据说这个帧率最适合人眼交互，大概16.7ms渲染一帧，所以如果要让用户觉得顺畅，单个macrotask及它相关的所有microtask最好能在16.7ms内完成。
 
-## 浏览器环境和node环境表现不一致
+> 但也不是每轮事件循环都会执行视图更新，浏览器有自己的优化策略，例如把几次的视图更新累积到一起重绘，重绘之前会通知requestAnimationFrame执行回调函数，也就是说requestAnimationFrame回调的执行时机是在一次或多次事件循环的UI render阶段
+
+```javascript
+setTimeout(function() {console.log('timer1')}, 0)
+
+requestAnimationFrame(function(){
+	console.log('requestAnimationFrame')
+})
+
+setTimeout(function() {console.log('timer2')}, 0)
+
+new Promise(function executor(resolve) {
+	console.log('promise 1')
+	resolve()
+	console.log('promise 2')
+}).then(function() {
+	console.log('promise then')
+})
+
+console.log('end')
+```
+
+上面代码的输出结果是不确定的。可能是`promise1, promise2, end, promise then, requestAnimationFrame, timer1, timer2`，也有可能是`promise1, promise2, end, promise then, timer1, requestAnimationFrame, timer2`，还有可能是`promise1, promise2, end, promise then, timer1, timer2, requestAnimationFrame`。共同点就是，requestAnimationFrame总是在一轮事件循环的末尾被调用，但是在哪一轮事件循环的末尾被调用就不确定了。
+
+
+## node环境
 ```javascript
 setTimeout(function() {
     console.log(1);
@@ -82,7 +110,7 @@ setTimeout(function() {
 
 同样的代码，在Chrome下输出1,2,3,4,5,6。在node环境下，有时输出1,2,3,4,5,6；有时输出1,2,4,5,3,6。ummmm~~~。造成这个问题的原因是chrome和node对于Promise的实现是不同的，可以参考[这个问题下方应杭的回答](https://www.zhihu.com/question/272286497)。
 
-## node环境下宏任务和微任务详解
+### node环境下宏任务和微任务详解
 1. node环境下，宏任务是分阶段的，按阶段先后执行：
 
 - expired timers and intervals，即到期的setTimeout/setInterval
@@ -115,36 +143,16 @@ console.log(3)
 
 以上代码输出结果为3,2,1。
 
-3. 这个输出结果也不稳定：
-```javascript
-setTimeout(function() {
-    console.log(1);
-    new Promise(function(resolve) {
-        console.log(2);
-        resolve();
-    }).then(function() {
-        console.log(3)
-    })
-})
-
-setTimeout(function() {
-    console.log(4);
-    new Promise(function(resolve) {
-        console.log(5);
-        resolve();
-    }).then(function() {
-        console.log(6)
-    })
-})
-```
-
 ## 参考：
 - [这一次，彻底弄懂 JavaScript 执行机制](https://juejin.im/post/59e85eebf265da430d571f89)
 - [通过microtasks和macrotasks看JavaScript异步任务执行顺序](https://tuobaye.com/2017/10/24/%E9%80%9A%E8%BF%87microtasks%E5%92%8Cmacrotasks%E7%9C%8BJavaScript%E5%BC%82%E6%AD%A5%E4%BB%BB%E5%8A%A1%E6%89%A7%E8%A1%8C%E9%A1%BA%E5%BA%8F/)
 - [图解搞懂JavaScript引擎Event Loop](https://juejin.im/post/5a6309f76fb9a01cab2858b1)
 - [面试之Event Loop，nextTick()和setImmediate()区别分析](https://zhuanlan.zhihu.com/p/33090541)
 - [nodejs中的event loop](https://www.jianshu.com/p/deedcbf68880)
+- [深入理解js事件循环机制（浏览器篇）](http://lynnelv.github.io/js-event-loop-browser)
+- [深入理解js事件循环机制（Node.js篇）](http://lynnelv.github.io/js-event-loop-nodejs)
 - [HTML规范](https://html.spec.whatwg.org/multipage/webappapis.html#event-loop-processing-model)
+- [nodejs官方文档](https://nodejs.org/en/docs/guides/event-loop-timers-and-nexttick/)
 
 # new一个对象的过程发生了什么
 1. 创建一个新对象
