@@ -322,14 +322,18 @@ dog.bark(); // 汪汪汪!
 - [廖雪峰的JavaScript教程](https://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001434499763408e24c210985d34edcabbca944b4239e20000)
 - 《JavaScript高级程序设计（第三版）》第六章
 
-# 函数式编程
+# Ajax
 
-# Vue响应式原理
+# 函数式编程
 
 # 设计模式
 
 # RESTful API
 
+# Vue
+## 响应式原理
+
+# 防抖和节流
 
 
 --- **Web Apis** ---
