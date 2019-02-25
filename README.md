@@ -1,7 +1,7 @@
 - 综合
 - [Html&Css](Html&Css/README.md)
 - [JavaScript](Javascript/README.md)
-- Ajax
+- [Ajax](ajax/README.md)
 - Node.js
 - Vue
 - Webpack
