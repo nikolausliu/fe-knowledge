@@ -409,3 +409,8 @@ dog.bark(); // 汪汪汪!
 - [promise-demo](https://htmlpreview.github.io/?https://github.com/nikolausliu/fe-knowledge/blob/master/Javascript/notification-promise.html)
 
 </details>
+
+
+# 面试题
+- [记一道经典前端题](https://juejin.im/post/5c6cb5bae51d45012d068579)
+- [深拷贝](https://juejin.im/post/5c45112e6fb9a04a027aa8fe)
