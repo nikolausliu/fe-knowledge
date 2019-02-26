@@ -1,4 +1,4 @@
---- **基本概念** ---
+
 # 原型及原型链
 
 # 作用域及闭包
@@ -336,7 +336,7 @@ dog.bark(); // 汪汪汪!
 # 防抖和节流
 
 
---- **Web Apis** ---
+
 # window.RequestAnimationFrame
 
 [MDN上的定义](https://developer.mozilla.org/zh-CN/docs/Web/API/Window/requestAnimationFrame)
